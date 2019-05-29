@@ -631,6 +631,13 @@ build_rect2d(DBfile * dbfile, int size)
                   ndims, mix_next, mix_mat, mix_zone, mix_vf, mixlen,
                   DB_FLOAT, optlist);
 
+    {
+        void *arr[4] = {u,v,t,u};
+        char *arrnames[] = {"V0","V1","V2","V3"};
+        DBPutQuadvar(dbfile, "tensor", meshname, 4, arrnames, arr, dims, ndims, NULL, 0,
+            DB_FLOAT, DB_NODECENT, NULL);
+    }
+
     if (ascii)
     {
        j = true;

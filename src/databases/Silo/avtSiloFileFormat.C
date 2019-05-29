@@ -3222,6 +3222,21 @@ avtSiloFileFormat::ReadQuadvars(DBfile *dbfile,
                 }
                 md->Add(smd);
             }
+            else if (qv->nvals == 4 && qv->ndims == 2)
+            {
+#warning FIX DUPLICATION OF CODE HERE
+std::cerr << "Got here" << std::endl;
+                avtTensorMetaData *tmd = new avtTensorMetaData(name_w_dir, meshname, centering, qv->nvals);
+                tmd->validVariable = valid_var;
+                tmd->hideFromGUI = guiHide;
+                tmd->matRestricted = selectedMats;
+                if(qv->units != 0)
+                {
+                    tmd->hasUnits = true;
+                    tmd->units = string(qv->units);
+                }
+                md->Add(tmd);
+            }
             else if (qv->ascii_labels)
             {
                 avtLabelMetaData *lmd = new avtLabelMetaData(name_w_dir,

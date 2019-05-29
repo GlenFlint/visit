@@ -263,6 +263,7 @@ avtVectorDecomposeExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomai
         }
         else if (arr->GetNumberOfComponents() == 9)
         {
+#warning HANDLE 9 COMPONENT CASE ONLY AND CORRECTLY FOR VOIGT NOTATION
             //
             // Give one row of the tensor back.  Since VTK dislikes vectors
             // of size 2, make sure that we have 3 components.

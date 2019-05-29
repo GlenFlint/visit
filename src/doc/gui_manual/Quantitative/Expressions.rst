@@ -80,6 +80,14 @@ the expression produces. The available types are:
 * Array
 * Curve
 
+Note that the *Symmetric Tensor* type is really just a notational convenience.
+It is just a Tensor with the added information that its believed to be symmetric.
+Symmetric tensor fields are stored and processed as a 4-component (2x2 for two
+dimensional) or 9-component (3x3 for three dimensional) quantities like any other
+general tensor would be. Any expressions requiring a symmetric tensor type field
+as an argument or producing one as a result do so without imposing any requirement
+of symmetry.
+
 Users must be sure to select the appropriate type for any expression they
 create. The selected type determines the menu in which the variable appears
 and subsequently the plots that can operate on the variable.
@@ -756,7 +764,9 @@ Contraction Function: ``contraction()`` : ``contraction(expr0)``
 .. _Determinant_Expression_Function:
 
 Determinant Function: ``determinant()`` : ``determinant(expr0)``
-    No description available.
+    Creates a *scalar* expression which is everywhere the
+    `*determinant* <https://en.wikipedia.org/wiki/Determinant>`_ of
+    ``expr0`` which must be *tensor* valued.
 
 .. _Effective_Tensor_Expression_Function:
 
@@ -767,10 +777,9 @@ Effective Tensor Function: ``effective_tensor()`` : ``effective_tensor(expr0)``
 
 Eigenvalue Function: ``eigenvalue()`` : ``eigenvalue(expr0)``
     The ``expr0`` argument must evaluate to a 3x3 *symmetric* tensor. The
-    eigenvalue
-    expression returns the eigenvalues of the 3x3 *symmetric* matrix argument
-    as a vector valued expression where each eigenvalue is a component of
-    the vector. Use the vector component operator,
+    eigenvalue expression returns the eigenvalues of the 3x3 *symmetric*
+    matrix argument as a vector valued expression where each eigenvalue
+    is a component of the vector. Use the vector component operator,
     :ref:`[] <Vector_Component_Expression_Operator>`, to access individual
     eigenvalues.
 
@@ -778,10 +787,9 @@ Eigenvalue Function: ``eigenvalue()`` : ``eigenvalue(expr0)``
 
 Eigenvector Function: ``eigenvector()`` : ``eigenvector(expr0)``
     The ``expr0`` argument must evaluate to a 3x3 *symmetric* tensor. The
-    eigenvector
-    expression returns the eigenvectors of the 3x3 matrix argument as a tensor
-    (3x3 matrix) valued expression where each column in the tensor is one of
-    the eigenvectors.
+    eigenvector expression returns the eigenvectors of the 3x3 matrix argument
+    as a tensor (3x3 matrix) valued expression where each column in the tensor
+    is one of the eigenvectors.
 
     In order to use the vector component operator
     :ref:`[] <Vector_Component_Expression_Operator>`, to access individual
@@ -795,8 +803,8 @@ Eigenvector Function: ``eigenvector()`` : ``eigenvector(expr0)``
 .. _Inverse_Expression_Function:
 
 Inverse Function: ``inverse()`` : ``inverse(expr0)``
-    Creates a new tensor expression which is everywhere the inverse of its
-    input argument, which must also be a tensor.
+    Creates a new *tensor* expression which is everywhere the inverse of
+    ``expr0`` which must also be a tensor.
 
 .. _Principal_Deviatoric_Tensor_Expression_Function:
 
@@ -826,7 +834,9 @@ Tensor Maximum Shear Function: ``tensor_maximum_shear()`` : ``tensor_maximum_she
 .. _Trace_Expression_Function:
 
 Trace Function: ``trace()`` : ``trace(expr0)``
-    No description available.
+    Creates a new scalar expression which is everywhere the
+    `*trace* <https://en.wikipedia.org/wiki/Trace_(linear_algebra)``expr0>`_
+    of ``expr0`` which must be a 3x3 tensor.
 
 .. _Viscous_Stress_Expression_Function:
 
