@@ -63,85 +63,85 @@ PyExtrudeAttributes_ToString(const ExtrudeAttributes *atts, const char *prefix)
         snprintf(tmpStr, 1000, "%sbyVariable = 0\n", prefix);
     str += tmpStr;
     {   const stringVector &scalarVariableNames = atts->GetScalarVariableNames();
-        SNPRINTF(tmpStr, 1000, "%sscalarVariableNames = (", prefix);
+        snprintf(tmpStr, 1000, "%sscalarVariableNames = (", prefix);
         str += tmpStr;
         for(size_t i = 0; i < scalarVariableNames.size(); ++i)
         {
-            SNPRINTF(tmpStr, 1000, "\"%s\"", scalarVariableNames[i].c_str());
+            snprintf(tmpStr, 1000, "\"%s\"", scalarVariableNames[i].c_str());
             str += tmpStr;
             if(i < scalarVariableNames.size() - 1)
             {
-                SNPRINTF(tmpStr, 1000, ", ");
+                snprintf(tmpStr, 1000, ", ");
                 str += tmpStr;
             }
         }
-        SNPRINTF(tmpStr, 1000, ")\n");
+        snprintf(tmpStr, 1000, ")\n");
         str += tmpStr;
     }
     {   const stringVector &visualVariableNames = atts->GetVisualVariableNames();
-        SNPRINTF(tmpStr, 1000, "%svisualVariableNames = (", prefix);
+        snprintf(tmpStr, 1000, "%svisualVariableNames = (", prefix);
         str += tmpStr;
         for(size_t i = 0; i < visualVariableNames.size(); ++i)
         {
-            SNPRINTF(tmpStr, 1000, "\"%s\"", visualVariableNames[i].c_str());
+            snprintf(tmpStr, 1000, "\"%s\"", visualVariableNames[i].c_str());
             str += tmpStr;
             if(i < visualVariableNames.size() - 1)
             {
-                SNPRINTF(tmpStr, 1000, ", ");
+                snprintf(tmpStr, 1000, ", ");
                 str += tmpStr;
             }
         }
-        SNPRINTF(tmpStr, 1000, ")\n");
+        snprintf(tmpStr, 1000, ")\n");
         str += tmpStr;
     }
     {   const doubleVector &extentMinima = atts->GetExtentMinima();
-        SNPRINTF(tmpStr, 1000, "%sextentMinima = (", prefix);
+        snprintf(tmpStr, 1000, "%sextentMinima = (", prefix);
         str += tmpStr;
         for(size_t i = 0; i < extentMinima.size(); ++i)
         {
-            SNPRINTF(tmpStr, 1000, "%g", extentMinima[i]);
+            snprintf(tmpStr, 1000, "%g", extentMinima[i]);
             str += tmpStr;
             if(i < extentMinima.size() - 1)
             {
-                SNPRINTF(tmpStr, 1000, ", ");
+                snprintf(tmpStr, 1000, ", ");
                 str += tmpStr;
             }
         }
-        SNPRINTF(tmpStr, 1000, ")\n");
+        snprintf(tmpStr, 1000, ")\n");
         str += tmpStr;
     }
     {   const doubleVector &extentMaxima = atts->GetExtentMaxima();
-        SNPRINTF(tmpStr, 1000, "%sextentMaxima = (", prefix);
+        snprintf(tmpStr, 1000, "%sextentMaxima = (", prefix);
         str += tmpStr;
         for(size_t i = 0; i < extentMaxima.size(); ++i)
         {
-            SNPRINTF(tmpStr, 1000, "%g", extentMaxima[i]);
+            snprintf(tmpStr, 1000, "%g", extentMaxima[i]);
             str += tmpStr;
             if(i < extentMaxima.size() - 1)
             {
-                SNPRINTF(tmpStr, 1000, ", ");
+                snprintf(tmpStr, 1000, ", ");
                 str += tmpStr;
             }
         }
-        SNPRINTF(tmpStr, 1000, ")\n");
+        snprintf(tmpStr, 1000, ")\n");
         str += tmpStr;
     }
     const char *variableDisplay_names = "Index, Value";
     switch (atts->GetVariableDisplay())
     {
       case ExtrudeAttributes::Index:
-          SNPRINTF(tmpStr, 1000, "%svariableDisplay = %sIndex  # %s\n", prefix, prefix, variableDisplay_names);
+          snprintf(tmpStr, 1000, "%svariableDisplay = %sIndex  # %s\n", prefix, prefix, variableDisplay_names);
           str += tmpStr;
           break;
       case ExtrudeAttributes::Value:
-          SNPRINTF(tmpStr, 1000, "%svariableDisplay = %sValue  # %s\n", prefix, prefix, variableDisplay_names);
+          snprintf(tmpStr, 1000, "%svariableDisplay = %sValue  # %s\n", prefix, prefix, variableDisplay_names);
           str += tmpStr;
           break;
       default:
           break;
     }
 
-    SNPRINTF(tmpStr, 1000, "%slength = %g\n", prefix, atts->GetLength());
+    snprintf(tmpStr, 1000, "%slength = %g\n", prefix, atts->GetLength());
     str += tmpStr;
     snprintf(tmpStr, 1000, "%ssteps = %d\n", prefix, atts->GetSteps());
     str += tmpStr;

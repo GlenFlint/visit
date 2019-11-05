@@ -402,7 +402,8 @@ avtExtrudeFilter::ExecuteData(avtDataRepresentation *in_dr)
             else // if( nodeData )
               out_ds = ExtrudeToStructuredGrid(in_ds);
           }
-          else if(in_ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
+          else if(in_ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID ||
+                  in_ds->GetDataObjectType() == VTK_POLY_DATA)
           {
             if( cellData )
               out_ds = ExtrudeCellVariableToUnstructuredGrid(vtkPointSet::SafeDownCast(in_ds));
@@ -485,7 +486,8 @@ avtExtrudeFilter::ExecuteData(avtDataRepresentation *in_dr)
               else // if( nodeData )
                 out_ds = ExtrudeToStructuredGrid(in_ds);
             }
-            else if(in_ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
+            else if(in_ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID ||
+                    in_ds->GetDataObjectType() == VTK_POLY_DATA)
             {
               if( cellData )
                 out_ds = ExtrudeCellVariableToUnstructuredGrid(vtkPointSet::SafeDownCast(in_ds),
@@ -520,7 +522,8 @@ avtExtrudeFilter::ExecuteData(avtDataRepresentation *in_dr)
         {
           out_ds = ExtrudeToStructuredGrid(in_ds);
         }
-        else if(in_ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
+        else if(in_ds->GetDataObjectType() == VTK_UNSTRUCTURED_GRID ||
+                in_ds->GetDataObjectType() == VTK_POLY_DATA)
         {
           out_ds = ExtrudeToUnstructuredGrid(vtkPointSet::SafeDownCast(in_ds));
         }
@@ -741,7 +744,21 @@ avtExtrudeFilter::CopyVariables(vtkDataSet *in_ds, vtkDataSet *out_ds,
       {
         vtkIdType nCells = in_ds->GetNumberOfCells();
 
-        vtkIdType n_out_pts = nCells * 8 * (nSteps+1);
+	unsigned int nPointsPerCell = 0;
+	int cellType = in_ds->GetCell(0)->GetCellType();
+    
+	if (cellType == VTK_QUAD)
+	  nPointsPerCell = 8;
+	else if (cellType == VTK_TRIANGLE)
+	  nPointsPerCell = 6;
+	else if (cellType == VTK_PIXEL)
+	  nPointsPerCell = 8;
+	else if (cellType == VTK_LINE || cellType == VTK_POLY_LINE)
+	  nPointsPerCell = 4;
+	else if (cellType == VTK_VERTEX)
+	  nPointsPerCell = 2;
+      
+        vtkIdType n_out_pts = nCells * nPointsPerCell * (nSteps+1);
         out_pd->CopyAllocate(in_pd, n_out_pts);
         
         vtkIdType destPoint = 0;
@@ -1214,9 +1231,36 @@ avtExtrudeFilter::ExtrudeToUnstructuredGrid(vtkPointSet *in_ds)
                      "The number of scalar values does match the number of points.");
     }
     
+    unsigned int nPointsPerCell = 0;
+    int cellType = in_ds->GetCell(0)->GetCellType();
+    
+    if (cellType == VTK_QUAD)
+      nPointsPerCell = 8;
+    else if (cellType == VTK_TRIANGLE)
+      nPointsPerCell = 6;
+    else if (cellType == VTK_PIXEL)
+      nPointsPerCell = 8;
+    else if (cellType == VTK_LINE || cellType == VTK_POLY_LINE)
+      nPointsPerCell = 4;
+    else if (cellType == VTK_VERTEX)
+      nPointsPerCell = 2;
+      
+    for (vtkIdType cellId=0; cellId<nCells; ++cellId)
+    {
+      vtkCell *cell = in_ds->GetCell(cellId);
+      int c = cell->GetCellType();
+
+      if (c != VTK_QUAD && c != VTK_TRIANGLE  && c != VTK_PIXEL &&
+	  c != VTK_LINE && c != VTK_POLY_LINE && c != VTK_VERTEX)
+      {
+	EXCEPTION1(InvalidCellTypeException, 
+		   "anything but points, lines, polyline, quads, and triangles.");
+      }
+    }
+    
     vtkUnstructuredGrid *ugrid = vtkUnstructuredGrid::New();
     vtkIdType n_out_cells = nCells * nSteps;
-    ugrid->Allocate(n_out_cells * 8);
+    ugrid->Allocate(n_out_cells * nPointsPerCell);
     
     vtkPoints *points = CreateExtrudedPoints(in_ds->GetPoints(), nSteps+1);
     ugrid->SetPoints(points);
@@ -1601,7 +1645,7 @@ avtExtrudeFilter::ExtrudeCellVariableToUnstructuredGrid(vtkRectilinearGrid *in_d
 {                                                                 \
   if( nPreviousPts )                                              \
   {                                                               \
-    vtkIdType index = baseIndex + cellId*8 + id_out;              \
+    vtkIdType index = baseIndex + cellId*nPointsPerCell + id_out; \
                                                                   \
     if( id_out < incr )                                           \
       index += incr;                                              \
@@ -1636,6 +1680,39 @@ avtExtrudeFilter::ExtrudeCellVariableToUnstructuredGrid(vtkPointSet *in_ds,
           EXCEPTION1(ImproperUseException,
                      "The number of scalar values does match the number of cells.");
     }
+
+    unsigned int nPointsPerCell = 0;
+    int cellType = in_ds->GetCell(0)->GetCellType();
+    
+    if (cellType == VTK_QUAD)
+      nPointsPerCell = 8;
+    else if (cellType == VTK_TRIANGLE)
+      nPointsPerCell = 6;
+    else if (cellType == VTK_PIXEL)
+      nPointsPerCell = 8;
+    else if (cellType == VTK_LINE ||
+	     cellType == VTK_POLY_LINE)
+      nPointsPerCell = 4;
+    else if (cellType == VTK_VERTEX)
+      nPointsPerCell = 2;
+      
+    for (vtkIdType cellId=0; cellId<nCells; ++cellId)
+    {
+      vtkCell *cell = in_ds->GetCell(cellId);
+      int c = cell->GetCellType();
+
+      if (c != VTK_QUAD && c != VTK_TRIANGLE  && c != VTK_PIXEL &&
+	  c != VTK_LINE && c != VTK_POLY_LINE && c != VTK_VERTEX)
+      {
+	EXCEPTION1(InvalidCellTypeException, 
+		   "anything but points, lines, polyline, quads, and triangles.");
+      }
+
+      if (c != cellType)
+      {
+	EXCEPTION1(InvalidCellTypeException,  "All cells must be the same.");
+      }
+    }
     
     vtkUnstructuredGrid *ugrid;
     vtkPoints *points;
@@ -1643,7 +1720,8 @@ avtExtrudeFilter::ExtrudeCellVariableToUnstructuredGrid(vtkPointSet *in_ds,
     vtkDoubleArray *scalars_value;
     vtkIdType n_out_cells = nCells * nSteps;
     unsigned int nPreviousPts;
-    unsigned int nPointsAdded = n_out_cells * 8;    
+    unsigned int nPreviousCells;
+    unsigned int nPointsAdded = n_out_cells * nPointsPerCell;    
 
     // Set the grid so it can be used for multiple stacked extrusions.
     if( out_ds == nullptr ) {
@@ -1672,6 +1750,7 @@ avtExtrudeFilter::ExtrudeCellVariableToUnstructuredGrid(vtkPointSet *in_ds,
       }
       
       nPreviousPts = 0;
+      nPreviousCells = 0;
     }
     // Used for the next stacked extrusion.
     else
@@ -1684,10 +1763,14 @@ avtExtrudeFilter::ExtrudeCellVariableToUnstructuredGrid(vtkPointSet *in_ds,
       scalars_value = (vtkDoubleArray *) ugrid->GetCellData()->GetArray(stackedVarNames[1].c_str());
         
       nPreviousPts = points->GetNumberOfPoints();
+      nPreviousCells = out_ds->GetNumberOfCells();
 
       // Make sure the mesh (cells) sizes are the same.
-      if( nPreviousPts % nPointsAdded != 0 )
+      if( nPreviousCells % nCells != 0 )
       {
+	std::cerr << "nPreviousCells " << nPreviousCells << "  "
+		  << "nCells " << nCells << std::endl;
+
           EXCEPTION1(ImproperUseException,
                      "The number of cells in the meshes do not match.");
       }
@@ -1699,7 +1782,7 @@ avtExtrudeFilter::ExtrudeCellVariableToUnstructuredGrid(vtkPointSet *in_ds,
     double pt[3];
     double scalar;
     
-    vtkIdType baseIndex = nPreviousPts - (nCells * 8);
+    vtkIdType baseIndex = nPreviousPts - (nCells * nPointsPerCell);
     
     for(int s=0; s<nSteps; ++s)
     {
