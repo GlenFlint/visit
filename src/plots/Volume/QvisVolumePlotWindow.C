@@ -925,6 +925,9 @@ QvisVolumePlotWindow::CreateOpacityGroup(QWidget *parent, QVBoxLayout *pLayout,
 //   Kathleen Biagas, Fri Mar  2 14:55:01 MST 2018
 //   Removed tuvok.
 //
+//   Alister Maguire, Tue Jun 11 11:08:52 PDT 2019
+//   Enabled material props for the default renderer. 
+//
 // ****************************************************************************
 void QvisVolumePlotWindow::CreateSamplingGroups(QWidget *parent, QLayout *pLayout)
 {
@@ -1098,6 +1101,7 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
         centeredDiffButton->setEnabled(false);
         sobelButton->setEnabled(false);
         smoothDataToggle->setEnabled(false);
+        materialProperties->setEnabled(true);
         break;
     case VolumeAttributes::RayCasting:
         resampleGroup->setEnabled(false);
@@ -1397,7 +1401,7 @@ void QvisVolumePlotWindow::CreateOSPRayGroups(QWidget *parent, QLayout *pLayout)
     // value: min contribution
     osprayMinContributionWidget        = new QWidget(osprayGroup);
     QHBoxLayout *mincontributionLayout = new QHBoxLayout(osprayMinContributionWidget);
-    osprayMinContributionLabel         = new QLabel(tr("Minimum Contrinution"),
+    osprayMinContributionLabel         = new QLabel(tr("Minimum Contribution"),
                                                     osprayMinContributionWidget);
     osprayMinContribution              = new QDoubleSpinBox(osprayMinContributionWidget);
     osprayMinContribution->setKeyboardTracking(false);

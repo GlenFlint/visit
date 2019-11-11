@@ -178,7 +178,7 @@ avtPseudocolorPlot::~avtPseudocolorPlot()
         delete filter;
         filter = NULL;
     }
- 
+
     if (staggeringFilter != NULL)
     {
         delete staggeringFilter;
@@ -279,7 +279,7 @@ avtPseudocolorPlot::GetMapper(void)
     {
         return mapper;
     }
-    else 
+    else
     {
         return glyphMapper;
     }
@@ -500,6 +500,13 @@ avtPseudocolorPlot::ApplyRenderingTransformation(avtDataObject_p input)
       polylineToTubeFilter = NULL;
     }
 
+    // PolylineToRibbon Filter
+    if (polylineToRibbonFilter != NULL)
+    {
+      delete polylineToRibbonFilter;
+      polylineToRibbonFilter = NULL;
+    }
+
     if( atts.GetLineType() == PseudocolorAttributes::Tube )
     {
       double bbox[6] = {0.,1.,0.,1.,0.,1.};
@@ -522,15 +529,7 @@ avtPseudocolorPlot::ApplyRenderingTransformation(avtDataObject_p input)
 
       dob = polylineToTubeFilter->GetOutput();
     }
-
-    // PolylineToRibbon Filter
-    if (polylineToRibbonFilter != NULL)
-    {
-      delete polylineToRibbonFilter;
-      polylineToRibbonFilter = NULL;
-    }
-
-    if( atts.GetLineType() == PseudocolorAttributes::Ribbon )
+    else if( atts.GetLineType() == PseudocolorAttributes::Ribbon )
     {
       double bbox[6] = {0.,1.,0.,1.,0.,1.};
       dob->GetInfo().GetAttributes().GetOriginalSpatialExtents()->CopyTo(bbox);
@@ -930,7 +929,7 @@ avtPseudocolorPlot::SetColorTable(const char *ctName)
 
     colorTableIsFullyOpaque =
         avtColorTables::Instance()->ColorTableIsFullyOpaque(ctName);
-    
+
     bool namesMatch = (atts.GetColorTableName() == string(ctName));
     bool useOpacities = SetOpacityFromAtts();
 
@@ -1310,6 +1309,10 @@ avtPseudocolorPlot::SetOpacityFromAtts()
 //    Kathleen Biagas, Wed Dec 26 13:11:27 PST 2018
 //    Set colors for belowRange and aboveRange, as well as toggles for them.
 //
+//    Kathleen Biagas, Wed May 22 10:54:54 PDT 2019
+//    Make setting of BelowMin/AboveMax colors conditional upon Min/MaxFlag
+//    and UseBelowMin/UseAboveMaxColor.
+//
 // ****************************************************************************
 
 void
@@ -1346,7 +1349,7 @@ avtPseudocolorPlot::SetLegendRanges()
     {
         EXCEPTION1(InvalidLimitsException, true);
     }
- 
+
     varLegend->SetScaling(atts.GetScaling(), atts.GetSkewFactor());
 
     //
@@ -1362,10 +1365,16 @@ avtPseudocolorPlot::SetLegendRanges()
     varLegend->UseAboveRangeColor(atts.GetUseAboveMaxColor());
 
     double c[4];
-    atts.GetBelowMinColor().GetRgba(c);
-    varLegend->SetBelowRangeColor(c[0], c[1], c[2], c[3]);
-    atts.GetAboveMaxColor().GetRgba(c);
-    varLegend->SetAboveRangeColor(c[0], c[1], c[2], c[3]);
+    if (atts.GetMinFlag() && atts.GetUseBelowMinColor())
+    {
+        atts.GetBelowMinColor().GetRgba(c);
+        varLegend->SetBelowRangeColor(c[0], c[1], c[2], c[3]);
+    }
+    if (atts.GetMaxFlag() && atts.GetUseAboveMaxColor())
+    {
+        atts.GetAboveMaxColor().GetRgba(c);
+        varLegend->SetAboveRangeColor(c[0], c[1], c[2], c[3]);
+    }
 }
 
 // ****************************************************************************
@@ -1544,4 +1553,24 @@ avtPseudocolorPlot::SetCellCountMultiplierForSRThreshold(
         else
             cellCountMultiplierForSRThreshold = 12.0;
     }
+}
+
+
+// ****************************************************************************
+//  Method: avtPlot::PlotHasBeenGlyphed
+//
+//  Purpose:
+//    Returns whether or not this plot has been glyphed (point type isn't
+//    point or sphere). Will also return true if 'RenderPoints' is turned on.
+//
+//  Programmer: Kathleen Biagas
+//  Creation:   October 31, 2019
+//
+// ****************************************************************************
+
+bool
+avtPseudocolorPlot::PlotHasBeenGlyphed()
+{
+    return ((atts.GetPointType() != Point && atts.GetPointType() != Sphere) ||
+             atts.GetRenderPoints());
 }

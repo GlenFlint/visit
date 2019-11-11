@@ -446,6 +446,9 @@
 #    Eric Brugger, Mon Jan 28 15:14:54 PST 2019
 #    Changed SVN_REVISION to GIT_VERSION.
 #
+#    Eric Brugger, Wed Jun 26 10:06:57 PDT 2019
+#    Removed the CMM reader.
+#
 #****************************************************************************/
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.8 FATAL_ERROR)
@@ -837,10 +840,10 @@ ENDIF(WIN32)
 #
 VISIT_3RDPARTY_VAR(ADIOS_DIR     "Path containing the ADIOS library's include and lib")
 VISIT_3RDPARTY_VAR(ADIOS2_DIR     "Path containing the ADIOS library's include and lib")
+VISIT_3RDPARTY_VAR(ADIOS2_PAR_DIR "Path containing the ADIOS MPI library's include and lib")
 VISIT_3RDPARTY_VAR(ADVIO_DIR     "Path containing the AdvIO library's include and lib")
 VISIT_3RDPARTY_VAR(BOOST_DIR     "Path containing the BOOST library's include and lib")
 VISIT_3RDPARTY_VAR(BOXLIB_DIR    "Path containing the Boxlib library's include and lib")
-VISIT_3RDPARTY_VAR(CCMIO_DIR     "Path containing the CCMIO library's include and lib")
 VISIT_3RDPARTY_VAR(CFITSIO_DIR   "Path containing the CFITSIO library's include and lib")
 VISIT_3RDPARTY_VAR(CGNS_DIR      "Path containing the CGNS library's include and lib")
 VISIT_3RDPARTY_DEP(CGNS_LIBDEP   "CGNS library dependencies")
@@ -1296,9 +1299,6 @@ IF(NOT VISIT_BUILD_MINIMAL_PLUGINS OR VISIT_SELECTED_DATABASE_PLUGINS)
 
     # Configure Boxlib support.
     INCLUDE(${VISIT_SOURCE_DIR}/CMake/FindBoxlib.cmake)
-
-    # Configure ccmio support.
-    INCLUDE(${VISIT_SOURCE_DIR}/CMake/FindCCMIO.cmake)
 
     # Configure cfitsio support.
     INCLUDE(${VISIT_SOURCE_DIR}/CMake/FindCFITSIO.cmake)
@@ -2152,7 +2152,7 @@ endif()
 
 
 #-----------------------------------------------------------------------------
-# Add the "test" directory 
+# Add the "test" directory
 #-----------------------------------------------------------------------------
 # I'm trying to make the new tetsing work hramoniously with the old testing
 # while it's evaluated. if the new testing were ever made permanent then
@@ -2286,4 +2286,3 @@ ENDIF (NOT WIN32)
 if(VISIT_INSTALL_THIRD_PARTY)
     include(${VISIT_SOURCE_DIR}/CMake/PluginVsInstallHelpers.cmake)
 endif()
-

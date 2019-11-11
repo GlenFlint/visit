@@ -311,8 +311,14 @@ Product Operator (``*``) : ``exprL * exprR``
 .. _Division_Expression_Operator:
 
 Division Operator (``/``) : ``exprL / exprR``
-    Creates a new expression which is quotient after dividing the ``exprL``
+    Creates a new expression which is the quotient after dividing the ``exprL``
     expression by the ``exprR`` expression.
+
+Division Operator : ``divide(val_numerator, val_denominator, [div_by_zero_value, tolerance])``
+    Creates a new expression which is the quotient after dividing the
+    ``val_numerator`` expression by the ``val_denominator`` expression. The
+    ``div_by_zero_value`` is used wherever the ``val_denominator`` is within
+    ``tolerance`` of zero.
 
 .. _Exponent_Expression_Operator:
 
@@ -373,17 +379,17 @@ Base 10 Logarithm Function (``log10()``) : ``log10(expr0)``
     Creates a new expression which is everywhere the base 10 logarithm of its
     argument.
 
-.. _Pairwise_Max_Expression_Function:
+.. _Max_Expression_Function:
 
-Pairwise Max Function (``max()``) : ``max(expr0,exrp1)``
-    Creates a new expression which is everywhere the pairwise maximum of its
-    two arguments.
+Max Function (``max()``) : ``max(expr0, exrp1 [, ...])``
+    Creates a new expression which is everywhere the maximum among all input
+    variables.
 
-.. _Pairwise_Min_Expression_Function:
+.. _Min_Expression_Function:
 
-Pairwise Min Function (``min()``) : ``min(expr0,exrp1)``
-    Creates a new expression which is everywhere the pairwise minimum of its
-    two arguments.
+Min Function (``min()``) : ``min(expr0, exrp1 [, ...])``
+    Creates a new expression which is everywhere the minimum among all input
+    variables.
 
 .. _Modulo_Expression_Function:
 
@@ -1396,13 +1402,18 @@ Position-Based CMFE Function: ``pos_cmfe()`` : ``pos_cmfe(<Donor Variable>,<Targ
    the other database is encoded with a special syntax prepending the
    ``Donor Variable`` argument.
 
-   The ``Donor Variable`` argument is a string argument consisting
-   of the donor variable's name and up to three pre-pending sub-strings which
-   may be optionally needed to specify...
+.. _Pos_Cmfe_Donor_Variable_Synax:
 
-       #. ...the *Database* in which the donor variable resides,
-       #. ...the *State Id* from which to take the donor variable,
-       #. ...the *Modality* by which states are identified in the *State Id*
+   The ``Donor Variable`` argument is a string argument of the form::
+
+    <PATH-TO-DATABASE-FROM-CWD[SSS]MM:VARNAME>
+
+   consisting of the donor variable's name and up to three pre-pending
+   sub-strings which may be optionally needed to specify...
+
+       #. ...the *Database* (``PATH-TO-DATABASE-FROM-CWD``) in which the donor variable resides,
+       #. ...the *State Id* (``[SSS]``) from which to take the donor variable,
+       #. ...the *Modality* (``MM``) by which states are identified in the *State Id*
           sub-string.
 
    Depending on circumstances, specifying the ``Donor-Variable`` argument to
@@ -1436,10 +1447,14 @@ Position-Based CMFE Function: ``pos_cmfe()`` : ``pos_cmfe(<Donor Variable>,<Targ
    *delta*) to the current state. For example, the substring ``[200]c`` means to
    treat the ``200`` as a *cycle* number in the donor database whereas the
    the substring ``[-10]id`` means to treat the ``-10`` as an (``i``) index
-   (``d``) delta. Note that in cases where the donor database does not have
-   an exact match for the specified cycle or time, VisIt_ will chose the state
-   with the cycle or time which is closest in absolute distance. For the *index*
-   modality, if there is no exact match for the specified index, an error
+   (``d``) delta. So, ``[200]c`` would map the *donor* at cycle 200
+   to the *current* cycle of the *target* and ``[-10]id`` would map the
+   *donor* at the current *index minus 10* to the *current* index of the *target*.
+   In particular, the string ``[0]id`` is needed to create a CMFE that keeps
+   *donor* and *target* in lock step. Note that in cases where the donor database
+   does not have an exact match for the specified cycle or time, VisIt_ will chose
+   the state with the cycle or time which is closest in absolute distance. For the
+   *index* modality, if there is no exact match for the specified index, an error
    results. See cases D-I in the examples below.
 
    Note that the *relative* form of specifying the *State Id* is needed even
@@ -1779,13 +1794,21 @@ isnan Function: ``isnan()`` : ``isnan(expr0)``
 
 .. _Q_Criterion_Expression_Function:
 
-q criterion Function: ``q_criterion()`` : ``q_criterion(expr0)``
-    No description available.
+q criterion Function: ``q_criterion()`` : ``q_criterion(<gradient(velocity[0])>, <gradient(velocity[1])>, <gradient(velocity[2])>)``
+    Generates the Q-criterion value developed by Hunt et. al.. It is based on the 
+    observation that, in regions where the Q-criterion is greater than zero, rotation 
+    exceeds strain and, in conjunction with a pressure min, indicates the presence of 
+    a vortex. The three arguments to the function are gradient vectors of the x-, y-, 
+    and z-velocity. The gradient function (see :ref:`gradient() <Gradient_Expression_Function>`) can be used to create the gradient vectors. 
 
 .. _Lambda2_Expression_Function:
 
-lambda2 Function: ``lambda2()`` : ``lambda2(expr0)``
-    No description available.
+lambda2 Function: ``lambda2()`` : ``lambda2(<gradient(velocity[0])>, <gradient(velocity[1])>, <gradient(velocity[2])>)``
+    Generates the Lambda-2 criterion. It is based on the observation that, in 
+    regions where Lambda-2 is less than zero, rotation exceeds strain and, in 
+    conjunction with a pressure min, indicates the presence of a vortex. The three
+    arguments to the function are gradient vectors of the x-, y-, and z-velocity.
+    The gradient function (see :ref:`gradient() <Gradient_Expression_Function>`) can be used to create the gradient vectors. 
 
 .. _Mean_Curvature_Expression_Function:
 
