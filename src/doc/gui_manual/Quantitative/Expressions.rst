@@ -891,13 +891,6 @@ Principal Tensor Function: ``principal_tensor()`` : ``principal_tensor(expr0)``
     here with all zeros for off-diagonal elements and the eigenvalues on the
     main diagonal.
 
-.. _Transpose_Expression_Function:
-
-Transpose Function: ``transpose()`` : ``transpose(expr0)``
-    Creates a new tensor expression which is everywhere the transpose of
-    its input argument which must also be a tensor. The first row vector
-    in the input becomse the first column vector in the output, etc.
-
 .. _Tensor_Maximum_Shear_Expression_Function:
 
 Tensor Maximum Shear Function: ``tensor_maximum_shear()`` : ``tensor_maximum_shear(expr0)``
@@ -952,6 +945,13 @@ Viscous Stress Function: ``viscous_stress()`` : ``viscous_stress(expr0)``
         :language: C++
         :start-after: calculate the gradient
         :end-before: set the output value
+
+.. _Transpose_Expression_Function:
+
+Transpose Function: ``transpose()`` : ``transpose(expr0)``
+    Creates a new tensor expression which is everywhere the transpose of
+    its input argument which must also be a tensor. The first row vector
+    in the input becomse the first column vector in the output, etc.
 
 Array Expressions
 """""""""""""""""
