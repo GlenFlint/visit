@@ -142,6 +142,7 @@ avtVerdictExpression::~avtVerdictExpression()
 vtkDataArray *
 avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
 {
+    std::cout << "Entering avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
     vtkIdType nCells = in_ds->GetNumberOfCells();
 
     //
@@ -156,26 +157,32 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
     //
     if (OperateDirectlyOnMesh(in_ds))
     {
+        std::cout << "Operate directly on the mesh" << std::endl;
         MetricForWholeMesh(in_ds, dv);
     }
     else
     {
+        std::cout << "Not directly on mesh" << std::endl;
         const int MAXPOINTS = 100;
         double coordinates[MAXPOINTS][3];
         for (vtkIdType i = 0; i < nCells; i++)    
         {
+            std::cout << "Cell " << i << std::endl;
             vtkCell *cell = in_ds->GetCell(i);
             
             vtkIdType numPointsForThisCell = cell->GetNumberOfPoints();
+            std::cout << "Num points: " << numPointsForThisCell << std::endl;
             // Grab a pointer to the cell's points' underlying data array
             vtkDataArray *pointData = cell->GetPoints()->GetData();
     
             int cellType = cell->GetCellType();
             if (cellType == VTK_POLYGON)
             {
+                std::cout << "Cell is a polygon" << std::endl;
                 double total = 0.;
                 if (SummationValidForOddShapes())
                 {
+                    std::cout << "Summation is valid for odd shapes" << std::endl;
                     int numTris = numPointsForThisCell-2;
                     pointData->GetTuple(0,coordinates[0]);
                     for (int j = 0 ; j < numTris ; j++)
@@ -204,6 +211,7 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
                 continue;
             }
             
+            std::cout << "Cell is not a polgyon" << std::endl;
             //
             // Since the Verdict functions make their own copy of the data
             // anyway it would be nice to get the coordinate data without
@@ -250,6 +258,7 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
         }
     }
     
+    std::cout << "Exiting  avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
     return dv;
 }
 
