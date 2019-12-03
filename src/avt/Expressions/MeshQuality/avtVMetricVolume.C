@@ -94,7 +94,9 @@ double avtVMetricVolume::Metric (double coords[][3], int type)
     {
       case VTK_VOXEL:   // Note that the verdict filter already swapped the
                         // coordinates to make a voxel be like a hex.
+        debug5 << "Cell is a voxel" << std::endl;
       case VTK_HEXAHEDRON:
+        debug5 << "Cell is a hexahedron" << std::endl;
         if (useVerdictHex)
         {
             debug5 << "avtVMetricVolume:Metric: use VerdictHex is true" << std::endl;
@@ -108,10 +110,12 @@ double avtVMetricVolume::Metric (double coords[][3], int type)
         break;
         
       case VTK_TETRA:
+        debug5 << "Cell is a tetra" << std::endl;
         rv = v_tet_volume(4,coords);
         break;
 
       case VTK_WEDGE:
+        debug5 << "Cell is a wedge" << std::endl;
         {
             int   subdiv[3][4] = { {0,5,4,3}, {0,2,1,4}, {0,4,5,2} };
             double tet_coords[4][3];
@@ -134,6 +138,7 @@ double avtVMetricVolume::Metric (double coords[][3], int type)
       // However, it does the same thing that we do here: Divide the pyramid
       // into two tetrahedrons.
       case VTK_PYRAMID:
+        debug5 << "Cell is a pyramid" << std::endl;
         double one[4][3];
         double two[4][3];
             
