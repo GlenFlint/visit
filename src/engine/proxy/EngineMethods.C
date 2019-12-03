@@ -1439,6 +1439,7 @@ EngineMethods::ExportDatabases(const intVector &ids, const ExportDBAttributes &a
 void
 EngineMethods::UpdateExpressions(const ExpressionList &expressions)
 {
+    debug5 << "EngineMethods::UpdateExpressions" << std::endl;
     if (state->exprList != expressions)
     {
         state->exprList = expressions;

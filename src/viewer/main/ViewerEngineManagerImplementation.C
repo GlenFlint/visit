@@ -2792,6 +2792,7 @@ bool
 ViewerEngineManagerImplementation::UpdateExpressions(const EngineKey &ek, 
     const ExpressionList &eL)
 {
+    debug5 << "ViewerEngineManagerImplementation::UpdateExpressions" << std::endl;
     ENGINE_PROXY_RPC_BEGIN("UpdateExpressions");  
         engine->GetEngineMethods()->UpdateExpressions(eL);
     ENGINE_PROXY_RPC_END

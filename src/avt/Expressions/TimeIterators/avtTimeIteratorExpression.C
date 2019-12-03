@@ -310,6 +310,7 @@ avtTimeIteratorExpression::Execute(void)
 void
 avtTimeIteratorExpression::UpdateExpressions(int ts)
 {
+    debug5 << "avtTimeIteratorExpression" << std::endl;
     ExpressionList const *curExprList = ParsingExprList::Instance()->GetList();
     ExpressionList exprsToAdd;
     std::vector<std::pair<int, std::string> > exprsToRedefine;

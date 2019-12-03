@@ -9,6 +9,8 @@
 #include <ExpressionList.h>
 #include <MeshManagementAttributes.h>
 
+#include <DebugStream.h>
+
 #define IMPL() ViewerEngineManagerImplementation::Instance()
 
 ViewerEngineManager::ViewerEngineManager() : ViewerEngineManagerInterface()
@@ -359,6 +361,7 @@ ViewerEngineManager::ConstructDataBinning(const EngineKey &ek, int id)
 bool
 ViewerEngineManager::UpdateExpressions(const EngineKey &ek, const ExpressionList &eL)
 {
+    debug5 << "ViewerEngineManager::UpdateExpressions" << std::endl;
     return IMPL()->UpdateExpressions(ek, eL);
 }
 
