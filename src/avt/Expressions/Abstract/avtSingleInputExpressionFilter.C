@@ -7,6 +7,7 @@
 // ************************************************************************* //
 
 #include <avtSingleInputExpressionFilter.h>
+#include <DebugStream.h>
 
 
 // ****************************************************************************
@@ -23,6 +24,8 @@
 
 avtSingleInputExpressionFilter::avtSingleInputExpressionFilter()
 {
+    debug5 << "Entering avtSingleInputExpressionFilter::avtSingleInputExpressionFilter()" << std::endl;
+    debug5 << "Exiting  avtSingleInputExpressionFilter::avtSingleInputExpressionFilter()" << std::endl;
     ;
 }
 

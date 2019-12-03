@@ -40,7 +40,9 @@
 
 avtExpressionDataTreeIterator::avtExpressionDataTreeIterator()
 {
+    debug5 << "Entering avtExpressoinDataTreeIterator::avtExpressionDataTreeIterator()" << std::endl;
     ;
+    debug5 << "Exiting  avtExpressoinDataTreeIterator::avtExpressionDataTreeIterator()" << std::endl;
 }
 
 
@@ -161,6 +163,7 @@ avtExpressionDataTreeIterator::~avtExpressionDataTreeIterator()
 avtDataRepresentation *
 avtExpressionDataTreeIterator::ExecuteData(avtDataRepresentation *in_dr)
 {
+    debug5 << "Entering avtExpressoinDataTreeIterator::ExecuteData(avtDataRepresentation*)" << std::endl;
     avtDataRepresentation *out_dr = NULL;
 
 #ifdef HAVE_LIBVTKM
@@ -178,6 +181,7 @@ avtExpressionDataTreeIterator::ExecuteData(avtDataRepresentation *in_dr)
         out_dr = this->ExecuteData_VTK(in_dr); 
     }
 
+    debug5 << "Exiting  avtExpressoinDataTreeIterator::ExecuteData(avtDataRepresentation*)" << std::endl;
     return out_dr;
 }
 
@@ -263,6 +267,7 @@ avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation *in_dr)
 
         rv->Delete();
 
+        debug5 << "Exiting  avtExpressoinDataTreeIterator::ExecuteData(avtDataRepresentation*)" << std::endl;
         return out_dr;
     }
 
@@ -297,6 +302,7 @@ avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation *in_dr)
 
     rv->Delete();
 
+    debug5 << "Exiting  avtExpressoinDataTreeIterator::ExecuteData(avtDataRepresentation*)" << std::endl;
     return out_dr;
 }
 
@@ -325,6 +331,7 @@ avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation *in_dr)
 avtDataRepresentation *
 avtExpressionDataTreeIterator::ExecuteData_VTKm(avtDataRepresentation *in_dr)
 {
+    debug5 << "Entering avtExpressoinDataTreeIterator::ExecuteData_VTKm(avtDataRepresentation*)" << std::endl;
 #ifdef HAVE_LIBVTKM
     //
     // Get the VTK data set and domain number.
@@ -348,6 +355,7 @@ avtExpressionDataTreeIterator::ExecuteData_VTKm(avtDataRepresentation *in_dr)
     avtDataRepresentation *out_dr = new avtDataRepresentation(out,
             in_dr->GetDomain(), in_dr->GetLabel());
 
+    debug5 << "Exiting  avtExpressoinDataTreeIterator::ExecuteData_VTKm(avtDataRepresentation*)" << std::endl;
     return out_dr;
 #else
     return NULL;

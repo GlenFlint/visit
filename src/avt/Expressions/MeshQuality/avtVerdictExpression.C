@@ -75,10 +75,12 @@ Swap3(double c[][3], int a, int b)
 
 avtVerdictExpression::avtVerdictExpression()
 {
+    debug5 << "Entering avtVerdictExpression::avtVerdictExpression()" << std::endl;
     #ifndef HAVE_VERDICT
     EXCEPTION1(ExpressionException, "Verdict was not distributed with this "
                                     "release of VisIt.");
     #endif
+    debug5 << "Exting  avtVerdictExpression::avtVerdictExpression()" << std::endl;
 }
 
 
@@ -142,7 +144,7 @@ avtVerdictExpression::~avtVerdictExpression()
 vtkDataArray *
 avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
 {
-    std::cout << "Entering avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
+    debug5 << "Entering avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
     vtkIdType nCells = in_ds->GetNumberOfCells();
 
     //
@@ -258,7 +260,7 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
         }
     }
     
-    std::cout << "Exiting  avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
+    debug5 << "Exiting  avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
     return dv;
 }
 
@@ -295,11 +297,14 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
 void
 avtVerdictExpression::PreExecute()
 {
+    debug5 << "Entering avtVerdictExpression::PreExecute()" << std::endl;
     avtSingleInputExpressionFilter::PreExecute();
 
 #ifdef HAVE_VERDICT
-    if (!RequiresSizeCalculation())
+    if (!RequiresSizeCalculation()) {
+        debug5 << "Exiting  avtVerdictExpression::PreExecute()" << std::endl;
         return;
+    }
 
     VerdictSizeData.Clear();
 
@@ -320,6 +325,7 @@ avtVerdictExpression::PreExecute()
         v_set_quad_size(VerdictSizeData.quadSize/
                       (double)(VerdictSizeData.quadCount));
 #endif
+    debug5 << "Exiting  avtVerdictExpression::PreExecute()" << std::endl;
 }
 
 
@@ -338,7 +344,9 @@ avtVerdictExpression::PreExecute()
 void
 avtVerdictExpression::MetricForWholeMesh(vtkDataSet *ds, vtkDataArray *rv)
 {
+    debug5 << "Entering avtVerdictExpression::MetricForWholeMesh(vtkDataSet*, vtkDataArray*)" << std::endl;
     EXCEPTION0(ImproperUseException);
+    debug5 << "Exiting  avtVerdictExpression::MetricForWholeMesh(vtkDataSet*, vtkDataArray*)" << std::endl;
 }
 
 
@@ -375,6 +383,7 @@ avtVerdictExpression::MetricForWholeMesh(vtkDataSet *ds, vtkDataArray *rv)
 
 void SumSize(avtDataRepresentation &adr, void *, bool &)
 {
+    debug5 << "Entering SumSize(avtDataRepresentation&, void*, bool&)" << std::endl;
 #ifdef HAVE_VERDICT
     vtkDataSet *in_ds = adr.GetDataVTK();
 
@@ -443,4 +452,5 @@ void SumSize(avtDataRepresentation &adr, void *, bool &)
     }
     delete []results;
 #endif
+    debug5 << "Exiting  SumSize(avtDataRepresentation&, void*, bool&)" << std::endl;
 }

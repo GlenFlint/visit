@@ -15,6 +15,8 @@
 
 #include <verdict.h>
 
+#include <DebugStream.h>
+
 
 double d_hex_volume(double coords[][3]);
 
@@ -85,6 +87,7 @@ avtVMetricVolume::avtVMetricVolume()
 
 double avtVMetricVolume::Metric (double coords[][3], int type)
 {
+    debug5 << "Entering avtVMetricVolume::Metric(double[][], int)" << std::endl;
 #ifdef HAVE_VERDICT 
     double rv = 0.;
     switch (type)
@@ -93,9 +96,15 @@ double avtVMetricVolume::Metric (double coords[][3], int type)
                         // coordinates to make a voxel be like a hex.
       case VTK_HEXAHEDRON:
         if (useVerdictHex)
-            rv = v_hex_volume(8,coords); 
+        {
+            debug5 << "avtVMetricVolume:Metric: use VerdictHex is true" << std::endl;
+            rv = v_hex_volume(8,coords);
+        }
         else
+        {
+            debug5 << "avtVMetricVolume:Metric: use VerdictHex is false" << std::endl;
             rv = d_hex_volume(coords);
+        }
         break;
         
       case VTK_TETRA:
@@ -147,6 +156,7 @@ double avtVMetricVolume::Metric (double coords[][3], int type)
         rv *= -1.;
     }
 
+    debug5 << "Exiting  avtVMetricVolume::Metric(double[][], int)" << std::endl;
     return rv;
 #else
     return -1.;
