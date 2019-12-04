@@ -188,6 +188,7 @@ avtExpressionDataTreeIterator::ExecuteData(avtDataRepresentation *in_dr)
 avtDataRepresentation *
 avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation *in_dr)
 {
+    debug5 << "Entering avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation*)" << std::endl;
     //
     // Get the VTK data set and domain number.
     //
@@ -273,6 +274,7 @@ avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation *in_dr)
 
     if (isPoint)
     {
+        debug4 << "ExecuteData_VTK: The data is a point" << std::endl;
         rv->GetPointData()->AddArray(dat);
         if (vardim == 1)
             rv->GetPointData()->SetActiveScalars(outputVariableName);
@@ -283,6 +285,7 @@ avtExpressionDataTreeIterator::ExecuteData_VTK(avtDataRepresentation *in_dr)
     }
     else
     {
+        debug4 << "ExecuteData_VTK: The data is NOT a point" << std::endl;
         rv->GetCellData()->AddArray(dat);
         if (vardim == 1)
             rv->GetCellData()->SetActiveScalars(outputVariableName);

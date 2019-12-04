@@ -64,8 +64,10 @@ avtSIMODataTreeIterator::~avtSIMODataTreeIterator()
 void
 avtSIMODataTreeIterator::FinishExecute(void)
 {
+    debug5 << "Entering avtSIMODataTreeIterator::FinishExecute()" << std::endl;
     // Wait for all work in the queue to finish.
     avtExecutionManagerFinishWork();
+    debug5 << "Exiting  avtSIMODataTreeIterator::FinishExecute()" << std::endl;
 }
 
 
@@ -115,6 +117,7 @@ avtSIMODataTreeIterator::FinishExecute(void)
 void
 avtSIMODataTreeIterator::Execute(void)
 {
+    debug5 << "Entering avtSIMODataTreeIterator::Execute()" << std::endl;
     //
     // This will walk through the data domains in a data tree.
     //
@@ -147,6 +150,7 @@ avtSIMODataTreeIterator::Execute(void)
     }
 
     SetOutputDataTree(newTree);
+    debug5 << "Exiting  avtSIMODataTreeIterator::Execute()" << std::endl;
 }
 
 
@@ -169,7 +173,10 @@ avtSIMODataTreeIterator::Execute(void)
 avtDataTree_p
 avtSIMODataTreeIterator::ExecuteDataTree(avtDataRepresentation *dr)
 {
-    return ExecuteDataTree(dr->GetDataVTK(), dr->GetDomain(), dr->GetLabel());
+    debug5 << "Entering avtSIMODataTreeIterator::ExecuteDataTree(avtDataRepresentation*)" << std::endl;
+    avtDataTree_p out = ExecuteDataTree(dr->GetDataVTK(), dr->GetDomain(), dr->GetLabel());
+    debug5 << "Exiting  avtSIMODataTreeIterator::ExecuteDataTree(avtDataRepresentation*)" << std::endl;
+    return out;
 }
 
 
@@ -191,6 +198,7 @@ avtSIMODataTreeIterator::ExecuteDataTree(avtDataRepresentation *dr)
 avtDataTree_p
 avtSIMODataTreeIterator::ExecuteDataTree(vtkDataSet *, int, std::string)
 {
+    debug5 << "Entering avtSIMODataTreeIterator::ExecuteDataTree(vtkDataSet*, int, string)" << std::endl;
     EXCEPTION0(ImproperUseException);
 }
 
@@ -225,6 +233,7 @@ typedef struct StructSIMOWorkItem
 void 
 avtSIMODataTreeIterator::ExecuteDataTreeOnThread(void *cbdata)
 {
+    debug5 << "Entering avtSIMODataTreeIterator::ExecuteDataTreeOnThread(void*)" << std::endl;
     SIMOWorkItem *work = (SIMOWorkItem *)cbdata;
 
     //
@@ -244,6 +253,7 @@ avtSIMODataTreeIterator::ExecuteDataTreeOnThread(void *cbdata)
 
     // Delete the work item pointer.
     delete work;
+    debug5 << "Exiting  avtSIMODataTreeIterator::ExecuteDataTreeOnThread(void*)" << std::endl;
 }
 
 // ****************************************************************************
@@ -293,10 +303,12 @@ avtSIMODataTreeIterator::ExecuteDataTreeOnThread(void *cbdata)
 void
 avtSIMODataTreeIterator::Execute(avtDataTree_p inDT, avtDataTree_p &outDT)
 {
+    debug5 << "Entering avtSIMODataTreeIterator::Execute(avtDataTree_p, avtDataTree_p&)" << std::endl;
     CheckAbort();
 
     if (*inDT == NULL)
     {
+    debug5 << "Exiting  avtSIMODataTreeIterator::Execute(avtDataTree_p, avtDataTree_p&)" << std::endl;
         return;
     }
 
@@ -304,6 +316,7 @@ avtSIMODataTreeIterator::Execute(avtDataTree_p inDT, avtDataTree_p &outDT)
 
     if (nc <= 0 && !inDT->HasData())
     {
+    debug5 << "Exiting  avtSIMODataTreeIterator::Execute(avtDataTree_p, avtDataTree_p&)" << std::endl;
         return;
     }
 
@@ -359,6 +372,7 @@ avtSIMODataTreeIterator::Execute(avtDataTree_p inDT, avtDataTree_p &outDT)
         outDT = new avtDataTree(nc, localOutDT);
         delete [] localOutDT;
     }
+    debug5 << "Exiting  avtSIMODataTreeIterator::Execute(avtDataTree_p, avtDataTree_p&)" << std::endl;
 }
 
 

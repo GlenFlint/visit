@@ -12,6 +12,8 @@
 
 #include <ImproperUseException.h>
 
+#include <DebugStream.h>
+
 // ****************************************************************************
 //  Method: avtDataTreeIterator constructor
 //
@@ -130,10 +132,12 @@ avtDataTreeIterator::ReleaseData(void)
 avtDataTree_p
 avtDataTreeIterator::ExecuteDataTree(avtDataRepresentation *in_dr)
 {
+    debug5 << "Entering avtDataTreeIterator::ExecuteDataTree(avtDataRepresentation*)" << std::endl;
     avtDataRepresentation *out_dr = ExecuteData(in_dr);
 
     if (out_dr == NULL)
     {
+        debug5 << "Exiting  avtDataTreeIterator::ExecuteDataTree(avtDataRepresentation*)" << std::endl;
         return NULL;
     }
 
@@ -148,5 +152,6 @@ avtDataTreeIterator::ExecuteDataTree(avtDataRepresentation *in_dr)
         delete out_dr;
     }
 
+    debug5 << "Exiting  avtDataTreeIterator::ExecuteDataTree(avtDataRepresentation*)" << std::endl;
     return retval;
 }
