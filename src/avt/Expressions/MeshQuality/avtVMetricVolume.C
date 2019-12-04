@@ -156,8 +156,7 @@ double avtVMetricVolume::Metric (double coords[][3], int type)
         break;
     }
 
-    // if (rv < 0. && useOnlyPositiveVolumes)
-    if (rv < 0.0)
+    if (rv < 0. && useOnlyPositiveVolumes)
     {
         rv *= -1.;
     }
