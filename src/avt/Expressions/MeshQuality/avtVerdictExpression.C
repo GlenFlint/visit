@@ -179,11 +179,11 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
             int cellType = cell->GetCellType();
             if (cellType == VTK_POLYGON)
             {
-                debug5 << "Cell is a polygon" << std::endl;
+                debug5 << "\tCell is a polygon" << std::endl;
                 double total = 0.;
                 if (SummationValidForOddShapes())
                 {
-                    debug5 << "Summation is valid for odd shapes" << std::endl;
+                    debug5 << "\t\tSummation is valid for odd shapes" << std::endl;
                     int numTris = numPointsForThisCell-2;
                     pointData->GetTuple(0,coordinates[0]);
                     for (int j = 0 ; j < numTris ; j++)
@@ -195,7 +195,7 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
                 }
                 else
                 {
-                    debug5 << "Summation is not valid for odd shapes" << std::endl;
+                    debug5 << "\t\tSummation is not valid for odd shapes" << std::endl;
                     static bool issuedWarning = false;
                     if (!issuedWarning)
                     {
@@ -213,7 +213,7 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
                 continue;
             }
             
-            debug5 << "Cell is not a polgyon" << std::endl;
+            debug5 << "\tCell is not a polgyon" << std::endl;
             //
             // Since the Verdict functions make their own copy of the data
             // anyway it would be nice to get the coordinate data without
