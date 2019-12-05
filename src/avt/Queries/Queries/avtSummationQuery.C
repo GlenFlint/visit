@@ -597,14 +597,20 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
         if (originalCells)
         {
             int origCell = (int)originalCells->GetComponent(i, comp); 
-            if (!(summedElements.insert(origCell)).second) 
+            if (!(summedElements.insert(origCell)).second)
+            {
+                debug5 << "Cell has already been summed over, so skipping this" << std::endl;
                 continue;
+            }
         } 
         else if (originalNodes)
         {
             int origNode = (int)originalNodes->GetComponent(i, comp); 
-            if (origNode == -1 || !(summedElements.insert(origNode)).second) 
+            if (origNode == -1 || !(summedElements.insert(origNode)).second)
+            {
+                debug5 << "Cell has already been summed over, so skipping this" << std::endl;
                 continue;
+            }
         }
 
         for(int j = 0; j < ncomps; j++)
