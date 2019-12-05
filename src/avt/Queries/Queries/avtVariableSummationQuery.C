@@ -11,6 +11,8 @@
 #include <avtCondenseDatasetFilter.h>
 #include <avtOriginatingSource.h>
 
+#include <DebugStream.h>
+
 using     std::string;
 
 #include <avtParallel.h>
@@ -34,9 +36,11 @@ using     std::string;
 
 avtVariableSummationQuery::avtVariableSummationQuery() : avtSummationQuery()
 {
+    debug5 << "Entering avtVariableSummationQuery::avtVariableSummationQuery()" << std::endl;
     condense = new avtCondenseDatasetFilter;
     condense->KeepAVTandVTK(true);
     condense->BypassHeuristic(true);
+    debug5 << "Exiting  avtVariableSummationQuery::avtVariableSummationQuery()" << std::endl;
 }
 
 
@@ -144,6 +148,7 @@ avtVariableSummationQuery::VerifyInput(void)
 avtDataObject_p
 avtVariableSummationQuery::ApplyFilters(avtDataObject_p inData)
 {
+    debug5 << "Entering avtVariableSummationQuery::ApplyFilters(avtDataObject_p)" << std::endl;
     avtDataValidity &dval = GetInput()->GetInfo().GetValidity();
     avtDataAttributes &datts = GetInput()->GetInfo().GetAttributes();
     bool cellData = false;
@@ -172,6 +177,7 @@ avtVariableSummationQuery::ApplyFilters(avtDataObject_p inData)
 #endif
     if (bDoCustomFiltering)
     {
+        debug5 << "VariableSummationQuery: bDoCustomFiltering is " << bDoCustomFiltering << std::endl;
         // This will work for time-varying data, too.
 
         // tell parent class to sum from original element values.
@@ -209,10 +215,14 @@ avtVariableSummationQuery::ApplyFilters(avtDataObject_p inData)
         condense->SetInput(temp);
         avtDataObject_p rv = condense->GetOutput();
         rv->Update(contract);
+    debug5 << "Exiting  avtVariableSummationQuery::ApplyFilters(avtDataObject_p)" << std::endl;
         return rv;
     }
     else 
     {
-        return avtSummationQuery::ApplyFilters(inData);
+        debug5 << "VariableSummationQuery: bDoCustomFiltering is " << bDoCustomFiltering << std::endl;
+        avtDataObject_p out = avtSummationQuery::ApplyFilters(inData);
+        debug5 << "Exiting  avtVariableSummationQuery::ApplyFilters(avtDataObject_p)" << std::endl;
+        return out;
     }
 }
