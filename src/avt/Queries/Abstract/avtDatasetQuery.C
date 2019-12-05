@@ -317,17 +317,21 @@ avtDatasetQuery::PostExecute()
 avtDataObject_p
 avtDatasetQuery::ApplyFilters(avtDataObject_p dob)
 {
+    debug5 << "Entering avtDatasetQuery::ApplyFilters(avtDataObject_p)" << std::endl;
     std::vector<std::string>  secondaryVars;
     GetSecondaryVars( secondaryVars );
 
     if (!timeVarying && secondaryVars.size() == 0)
     {
+        debug5 << "DatasetQuery:ApplyFilters: not time varying and no secondary variables" << std::endl;
         avtDataObject_p rv;
         CopyTo(rv, dob);
+    debug5 << "Exiting  avtDatasetQuery::ApplyFilters(avtDataObject_p)" << std::endl;
         return rv;
     }
     else
     {
+        debug5 << "DatasetQuery:ApplyFilters: time varying or secondary variables exist" << std::endl;
         avtContract_p orig_contract = dob->GetOriginatingSource()->
             GetGeneralContract();
 
@@ -351,7 +355,9 @@ avtDatasetQuery::ApplyFilters(avtDataObject_p dob)
 
         avtDataObject_p rv;
         CopyTo(rv, dob);
+        debug5 << "DatasetQuery:ApplyFilters: updating the data object" << std::endl;
         rv->Update(contract);
+    debug5 << "Exiting  avtDatasetQuery::ApplyFilters(avtDataObject_p)" << std::endl;
         return rv;
     }
 }

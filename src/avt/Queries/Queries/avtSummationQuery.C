@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include <DebugStream.h>
+
 using     std::string;
 
 
@@ -50,6 +52,7 @@ using     std::string;
 
 avtSummationQuery::avtSummationQuery()
 {
+    debug5 << "Entering avtSummationQuery::avtSummationQuery()" << std::endl;
     sumGhostValues = false;
     sumOnlyPositiveValues = false;
     sumFromOriginalElement = false;
@@ -57,6 +60,7 @@ avtSummationQuery::avtSummationQuery()
     denomSum = 1.;
     sumType = "";
     strcpy(descriptionBuffer, "Summing up variable");
+    debug5 << "Exiting  avtSummationQuery::avtSummationQuery()" << std::endl;
 }
 
 
@@ -235,10 +239,12 @@ avtSummationQuery::SumFromOriginalElement(bool val)
 void
 avtSummationQuery::PreExecute(void)
 {
+    debug5 << "Entering avtSummationQuery::PreExecute()" << std::endl;
     avtDatasetQuery::PreExecute();
 
     sums.clear();
     denomSum = 0.;
+    debug5 << "Exiting  avtSummationQuery::PreExecute()" << std::endl;
 }
 
 
@@ -291,6 +297,7 @@ avtSummationQuery::PreExecute(void)
 void
 avtSummationQuery::PostExecute(void)
 {
+    debug5 << "Entering avtSummationQuery::PostExecute()" << std::endl;
     int ncomps = (int)sums.size();
     // for procs with no data, broadcast the # of comps so they can
     // still particpate in the global sum.
@@ -379,6 +386,7 @@ avtSummationQuery::PostExecute(void)
     SetResultMessage(str);
     SetResultValues(sums);
     SetXmlResult(result_node.ToXML());
+    debug5 << "Exiting  avtSummationQuery::PostExecute()" << std::endl;
 }
 
 
@@ -428,10 +436,12 @@ avtSummationQuery::PostExecute(void)
 void
 avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
 {
+    debug5 << "Entering avtSummationQuery::Execute(vtkDataSet*, const int)" << std::endl;
     bool pointData = true;
     vtkDataArray *arr = ds->GetPointData()->GetArray(variableName.c_str());
     if (arr == NULL)
     {
+        debug5 << "SummationQuery:Execute: Cell-centered data" << std::endl;
         arr = ds->GetCellData()->GetArray(variableName.c_str());
         pointData = false;
     }
@@ -444,6 +454,7 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
     bool doAverage = CalculateAverage();
     if (doAverage)
     {
+        debug5 << "SummationQuery:Execute: Getting the average" << std::endl;
         if (pointData)
             arr2 = ds->GetPointData()->GetArray(denomVariableName.c_str());
         else 
@@ -461,6 +472,7 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
     vtkUnsignedCharArray *ghost_zones = NULL;
     if (!sumGhostValues)
     {
+        debug5 << "SummationQuery:Execute: summing the ghost values too" << std::endl;
         ghost_zones = (vtkUnsignedCharArray *)
                                   ds->GetCellData()->GetArray("avtGhostZones");
     }
@@ -475,6 +487,7 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
     vtkIntArray *originalNodes = NULL;
     if (sumFromOriginalElement)
     {
+        debug5 << "SummationQuery:Execute: summing from original data" << std::endl;
         if (pointData)
         {
             originalNodes = (vtkIntArray *)
@@ -504,7 +517,7 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
             }
         }
     }
-    std::set<int> summedElements;
+    std::set<int> summedElements; // Looks like this is used for keeping track of elements that are already summed
 
     int nvalues = arr->GetNumberOfTuples();
     int ncomps  = arr->GetNumberOfComponents();
@@ -523,15 +536,18 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
 
     for (int i = 0 ; i < nvalues ; i++)
     {
+        // Start by ignoring the ghost zones, if applicable
         if (!pointData)
         {
             if (ghost_zones != NULL)
             {
+                debug5 << "SummationQuery:Execute: Found a ghost zone. Ignoring." << std::endl;
                 if (ghost_zones->GetValue(i) != 0)
                     continue;
             }
             else if (ghost_nodes != NULL)
             {
+                debug5 << "SummationQuery:Execute: Found a ghost point. Ignoring." << std::endl;
                 bool allGhost = true;
                 ds->GetCellPoints(i, list);
                 for (int j = 0 ; j < list->GetNumberOfIds() ; j++)
@@ -547,11 +563,13 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
         {
             if (ghost_nodes != NULL)
             {
+                debug5 << "SummationQuery:Execute: Found a ghost zone. Ignoring." << std::endl;
                 if (ghost_nodes->GetValue(i) != 0)
                     continue;
             }
             else if (ghost_zones != NULL)
             {
+                debug5 << "SummationQuery:Execute: Found a ghost point. Ignoring." << std::endl;
                 ds->GetPointCells(i, list);
                 int nghost = 0;
                 for (int j = 0 ; j < list->GetNumberOfIds(); j++)
@@ -564,8 +582,10 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
         }
 
         double *vals = arr->GetTuple(i);
+        debug5 << "SummationQuery:Execute: val is " << vals[0] << std::endl;
         if (sumOnlyPositiveValues)
         {
+            debug5 << "SummationQuery:Execute: summing only positive numbers" << std::endl;
             bool all_pos = true;
             for(int j = 0; j < ncomps && all_pos; j++)
                 all_pos = all_pos && (vals[j] > 0.0);
@@ -592,7 +612,11 @@ avtSummationQuery::Execute(vtkDataSet *ds, const int dom)
         if (doAverage)
             denomSum += arr2->GetTuple1(i);
     }
+
+    debug5 << "SummationQuery:Execute: sums is: " << sums[0] << std::endl;
+
     list->Delete();
+    debug5 << "Exiting  avtSummationQuery::Execute(vtkDataSet*, const int)" << std::endl;
 }
 
 

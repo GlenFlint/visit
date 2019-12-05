@@ -10,6 +10,7 @@
 #include <NonQueryableInputException.h>
 #include <avtSILRestriction.h>
 
+#include <DebugStream.h>
 
 
 ProgressCallback     avtDataObjectQuery::progressCallback = NULL;
@@ -47,6 +48,7 @@ void                *avtDataObjectQuery::initializeProgressCallbackArgs=NULL;
 
 avtDataObjectQuery::avtDataObjectQuery()
 {
+    debug5 << "Entering avtDataObjectQuery::avtDataObjectQuery()" << std::endl;
     timeVarying = false;
     parallelizingOverTime = false;
     querySILR = NULL;
@@ -55,6 +57,7 @@ avtDataObjectQuery::avtDataObjectQuery()
     timeCurveSpecs["useTimeForXAxis"] = true;
     timeCurveSpecs["useVarForYAxis"] = false;
     timeCurveSpecs["nResultsToStore"] = 1;
+    debug5 << "Exiting  avtDataObjectQuery::avtDataObjectQuery()" << std::endl;
 }
 
 

@@ -84,6 +84,7 @@ avtDataObject::~avtDataObject()
 bool
 avtDataObject::Update(avtContract_p contract)
 {
+    debug5 << "Entering avtDataObject::Update(avtContract_p)" << std::endl;
     bool rv = false;
     if (source == NULL)
     {
@@ -99,6 +100,7 @@ avtDataObject::Update(avtContract_p contract)
 
     contractFromPrevExecution = contract;
 
+    debug5 << "Exiting  avtDataObject::Update(avtContract_p)" << std::endl;
     return rv;
 }
 

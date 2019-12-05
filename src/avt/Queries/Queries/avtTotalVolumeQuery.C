@@ -12,6 +12,8 @@
 #include <avtSourceFromAVTDataset.h>
 #include <InvalidDimensionsException.h>
 
+#include <DebugStream.h>
+
 
 using     std::string;
 
@@ -35,6 +37,7 @@ using     std::string;
 
 avtTotalVolumeQuery::avtTotalVolumeQuery(bool useVerdictHex) : avtSummationQuery()
 {
+    debug5 << "Entering avtTotalVolumeQuery::avtTotalVolumeQuery(bool)" << std::endl;
     string      varname = "volume";
     string      sum_type = "Volume";    
     string      units_append = "^3";    
@@ -48,6 +51,7 @@ avtTotalVolumeQuery::avtTotalVolumeQuery(bool useVerdictHex) : avtSummationQuery
     SetSumType(sum_type);
     SetUnitsAppend(units_append);
     SumGhostValues(false);
+    debug5 << "Exiting  avtTotalVolumeQuery::avtTotalVolumeQuery(bool)" << std::endl;
 }
 
 
@@ -139,6 +143,7 @@ avtTotalVolumeQuery::VerifyInput()
 avtDataObject_p 
 avtTotalVolumeQuery::ApplyFilters(avtDataObject_p inData)
 {
+    debug5 << "Entering avtTotalVolumeQuery::ApplyFilters(avtDataObject_p)" << std::endl;
     avtContract_p contract =
         inData->GetOriginatingSource()->GetGeneralContract();
 
@@ -165,6 +170,7 @@ avtTotalVolumeQuery::ApplyFilters(avtDataObject_p inData)
     volume->SetInput(dob);
     avtDataObject_p objOut = volume->GetOutput();
     objOut->Update(contract);
+    debug5 << "Exiting  avtTotalVolumeQuery::ApplyFilters(avtDataObject_p)" << std::endl;
     return objOut;
 }
 
