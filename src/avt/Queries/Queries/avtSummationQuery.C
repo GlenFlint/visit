@@ -208,6 +208,7 @@ avtSummationQuery::SumOnlyPositiveValues(bool val)
 void
 avtSummationQuery::SumFromOriginalElement(bool val)
 {
+    debug5 << "avtSummationQuery:SumFromOriginalElement: setting to " << val << std::endl;
     sumFromOriginalElement = val;
 }
 
