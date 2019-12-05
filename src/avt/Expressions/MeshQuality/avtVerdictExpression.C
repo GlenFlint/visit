@@ -166,6 +166,9 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
     {
         const int MAXPOINTS = 100;
         double coordinates[MAXPOINTS][3];
+
+        double DEBUG_vol_total = 0.0;
+
         for (vtkIdType i = 0; i < nCells; i++)    
         {
             debug5 << "Cell " << i << std::endl;
@@ -257,7 +260,10 @@ avtVerdictExpression::DeriveVariable(vtkDataSet *in_ds, int currentDomainsIndex)
     
             double result = Metric(coordinates, cellType);
             dv->SetTuple1(i, result);
+
+            DEBUG_vol_total += result;
         }
+        std::cout << "VerdictExpression:DeriveVariable: total volume is " << DEBUG_vol_total << std::endl;
     }
     
     debug5 << "Exiting  avtVerdictExpression::DeriveVariable(vtkDataSet*, int)" << std::endl;
